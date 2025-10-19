@@ -379,6 +379,7 @@ class TagCloudContext:
         self.groups = groups
         self.selected_tags = unique_selected_tags
         self.has_selected_tags = has_selected_tags
+        self.tag_grouping = user_profile.tag_grouping
 
     def get_selected_tags(self, tags: List[Tag]):
         parsed_query = queries.parse_query_string(self.search.q)
