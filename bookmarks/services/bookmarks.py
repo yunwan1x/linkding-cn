@@ -3,7 +3,7 @@ from typing import Union
 
 from django.utils import timezone
 
-from bookmarks.models import Bookmark, User, parse_tag_string
+from bookmarks.models import Bookmark, BookmarkAsset, User, parse_tag_string
 from bookmarks.services import auto_tagging
 from bookmarks.services import tasks
 from bookmarks.services import website_loader
@@ -253,6 +253,15 @@ def create_html_snapshots(bookmark_ids: list[Union[int, str]], current_user: Use
     )
 
     tasks.create_html_snapshots(owned_bookmarks)
+
+def remove_all_html_snapshots(bookmark_ids: [Union[int, str]], current_user: User):
+    sanitized_bookmark_ids = _sanitize_id_list(bookmark_ids)
+
+    BookmarkAsset.objects.filter(
+        bookmark__owner=current_user,
+        bookmark_id__in=sanitized_bookmark_ids,
+        asset_type=BookmarkAsset.TYPE_SNAPSHOT,
+    ).delete()
 
 
 def _merge_bookmark_data(from_bookmark: Bookmark, to_bookmark: Bookmark):

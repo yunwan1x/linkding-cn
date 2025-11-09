@@ -48,6 +48,9 @@
         {% if bookmark_list.snapshot_feature_enabled %}
           <option value="bulk_snapshot">创建HTML快照</option>
         {% endif %}
+        {% if not 'bulk_delete_snapshot' in disable_actions %}
+          <option value="bulk_remove_snapshot">移除全部快照</option>
+        {% endif %}
       </select>
       <div class="tag-autocomplete d-none" ld-tag-autocomplete>
         <input name="bulk_tag_string" class="form-input input-sm" placeholder="标签名" variant="small">
