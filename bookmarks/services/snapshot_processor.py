@@ -22,24 +22,19 @@ _processors_module_cache = {}  # {loader_path: (module, mtime)}
 # 创建快照： 快照总调度
 def create_snapshot(url: str, filepath: str):
     settings_path = settings.LD_CUSTOM_SNAPSHOT_PROCESSOR_SETTINGS
-    domain = get_domain(url)
-    config = None
-    if os.path.exists(settings_path):
-        domain_map = load_settings(settings_path,_settings_cache)
-        if domain_map == "__JSON_ERROR__":
-            logger.error("【错误】快照 settings.json 解析失败，请检查文件格式")
-            return
-        config = search_config_for_domain(domain, domain_map)
-        if config:
-            processor_file = config.get("processor")
-            if processor_file:
-                processor_path = os.path.join(os.path.dirname(settings_path), processor_file) if processor_file else None
-                if processor_path and os.path.exists(processor_path):
-                    module = load_module(processor_path, _processors_module_cache)
-                    func = getattr(module, "_create_snapshot")
-                    return func(url, filepath, config)
-            elif config:
-                return _create_snapshot(url, filepath, config)
+    config = search_config_for_domain(url, settings_path, _settings_cache)
+
+    if config:
+        processor_file = config.get("processor")
+        if processor_file:
+            processor_path = os.path.join(os.path.dirname(settings_path), processor_file) if processor_file else None
+            if processor_path and os.path.exists(processor_path):
+                module = load_module(processor_path, _processors_module_cache)
+                func = getattr(module, "_create_snapshot")
+                return func(url, filepath, config)
+        else:
+            return _create_snapshot(url, filepath, config)
+
     return _create_snapshot(url, filepath)
 
 

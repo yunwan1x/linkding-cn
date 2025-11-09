@@ -44,29 +44,19 @@ _loaders_module_cache = {}  # {loader_path: (module, mtime)}
 # TODO: 目前一旦用户有自定义字段，就会失去缓存，暂时没考虑好传递config dict时的缓存方案
 def load_website_metadata(url: str, ignore_cache: bool = False):
     settings_path = settings.LD_CUSTOM_WEBSITE_LOADER_SETTINGS
-    domain = get_domain(url)
-    config = None
-    if os.path.exists(settings_path):
-        domain_map = load_settings(settings_path,_settings_cache)
-        if domain_map == "__JSON_ERROR__":
-            return WebsiteMetadata(
-                url=url,
-                title="【错误】settings.json 文件有误",
-                description="【错误】settings.json 解析失败，请检查文件格式",
-                preview_image=None,
-            )
-        # 使用支持通配符的查找
-        config = search_config_for_domain(domain, domain_map)
-        if config:
-            loader_file = config.get("loader")
-            if loader_file:
-                loader_path = os.path.join(os.path.dirname(settings_path), loader_file) if loader_file else None
-                if loader_path and os.path.exists(loader_path):
-                    module = load_module(loader_path, _loaders_module_cache)
-                    func = getattr(module, "_load_website_metadata")
-                    return func(url, config)
-            elif config:
-                return _load_website_metadata(url, config)
+    config = search_config_for_domain(url, settings_path, _settings_cache)
+        
+    if config:
+        loader_file = config.get("loader")
+        if loader_file:
+            loader_path = os.path.join(os.path.dirname(settings_path), loader_file) if loader_file else None
+            if loader_path and os.path.exists(loader_path):
+                module = load_module(loader_path, _loaders_module_cache)
+                func = getattr(module, "_load_website_metadata")
+                return func(url, config)
+        else:
+            return _load_website_metadata(url, config)
+
     if ignore_cache:
         return _load_website_metadata(url)
     return _load_website_metadata_cached(url)
