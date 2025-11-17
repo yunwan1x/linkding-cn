@@ -230,7 +230,7 @@ def search_action(request: HttpRequest):
         request.user_profile.save()
 
     # Handle random sort request
-    if "sort" in request.POST and request.POST["sort"] == "random":
+    if "sort" in request.POST and request.POST["sort"] == "randomxxx":
         new_seed = int(time.time())
         request.session['random_sort_seed'] = new_seed
 
