@@ -1,11 +1,11 @@
 services:
   linkding:
     container_name: "${LD_CONTAINER_NAME}"
-    image: woohoodai/linkding-cn:latest
+    image: changhui/linkding:latest-alpine
     ports:
       - "${LD_HOST_PORT:-9090}:9090"
     volumes:
       - "${LD_HOST_DATA_DIR:-./data}:/etc/linkding/data"
     env_file:
-      - .env
+      - env
     restart: unless-stopped
