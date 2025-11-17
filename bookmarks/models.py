@@ -519,7 +519,6 @@ class BookmarkSearchForm(forms.Form):
         (BookmarkSearch.SORT_ADDED_DESC, "添加时间 ↓"),
         (BookmarkSearch.SORT_TITLE_ASC, "标题 ↑"),
         (BookmarkSearch.SORT_TITLE_DESC, "标题 ↓"),
-        (BookmarkSearch.SORT_RANDOM, "随机"),
     ]
     FILTER_SHARED_CHOICES = [
         (BookmarkSearch.FILTER_SHARED_OFF, "关闭"),
