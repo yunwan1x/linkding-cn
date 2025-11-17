@@ -55,7 +55,7 @@ RUN wget https://www.sqlite.org/${SQLITE_RELEASE_YEAR}/sqlite-amalgamation-${SQL
 FROM python:3.12.9-alpine3.21 AS linkding
 LABEL org.opencontainers.image.source="https://github.com/sissbruecker/linkding"
 # install runtime dependencies
-RUN apk update && apk add bash curl icu libpq mailcap libssl3
+RUN apk update && apk add --no-cache bash curl icu libpq mailcap libssl3
 # create www-data user and group
 RUN set -x ; \
   addgroup -g 82 -S www-data ; \
@@ -113,7 +113,7 @@ FROM linkding AS linkding-plus
 # Update package lists (this layer will be cached unless package lists change)
 RUN apk update
 # Install dependencies (this layer will be cached unless we change the packages)
-RUN apk add nodejs npm chromium && \
+RUN apk add nodejs npm chromium-swiftshader && \
     apk cache clean
 # install single-file from fork for now, which contains several hotfixes
 RUN npm install -g https://github.com/sissbruecker/single-file-cli/tarball/4c54b3bc704cfb3e96cec2d24854caca3df0b3b6
